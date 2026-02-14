@@ -1,8 +1,33 @@
 <template>
-  <div class="research-container">
+  <div class="page-container research-page">
+    <section class="page-hero">
+      <span class="page-eyebrow">Publications</span>
+      <h1>Research</h1>
+      <p>
+        We build efficient, robust, and interpretable machine intelligence
+        systems across language, graph learning, and multimodal understanding.
+      </p>
+    </section>
+
+    <section class="github-entry glass-card">
+      <p class="github-title">Open Source at LUMIA</p>
+      <p class="github-desc">
+        All public code releases, reproducible implementations, and active repositories
+        are maintained in our GitHub organization.
+      </p>
+      <a
+        class="github-link"
+        href="https://github.com/LUMIA-Group"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Visit LUMIA Group on GitHub
+      </a>
+    </section>
+
     <div class="research-content">
       <section id="publications" class="section-item">
-        <section class="research-section">
+        <section class="research-section stagger-list">
           <!-- research 1 -->
           <div class="row">
             <div class="col-xs-12 col-sm-4">
@@ -634,62 +659,116 @@
     </div>
   </div>
 </template>
+
 <script>
-import { researchData } from "@/data/research";
 export default {
-  data() {
-    return {
-      researchData: researchData,
-    };
-  },
+  name: "ResearchPage",
 };
 </script>
+
 <style lang="less" scoped>
+.github-entry {
+  margin-bottom: 18px;
+  padding: 24px 26px;
+}
+
+.github-title {
+  margin: 0 0 8px;
+  font-size: 1.14rem;
+  font-weight: 600;
+}
+
+.github-desc {
+  margin: 0 0 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 9px 16px;
+  color: #fff;
+  background: linear-gradient(135deg, #0a84ff, #0071e3);
+}
+
+.github-link:hover {
+  color: #fff;
+  background: #0077ed;
+}
+
 .research-content {
-  max-width: 1280px;
-  margin: auto;
-  padding-top: 40px;
   text-align: left;
-  .research-section {
-    .row {
-      margin-top: 24px !important;
-      display: flex;
-      flex-wrap: wrap;
-      padding: 32px 0;
-      border-bottom: 1px solid #ddd;
-      &:last-child {
-        border: none;
-      }
-    }
-    .author {
-      margin-bottom: 8px;
-      text-align: justify;
-    }
-    .link-list {
-      margin-bottom: 8px;
-    }
-    article {
-      font-size: 15px;
-      text-align: justify;
-      line-height: 24px;
-    }
-    .col-sm-4 {
-        flex: 0 0 auto;
-        width: 33.33333333%;
-        
-    }
-    .col-sm-8 {
-      flex: 0 0 auto;
-      width: 66.66666667%;
-      padding-left: 24px;
-      box-sizing: border-box;
-    }
-    h4 {
-        font-size: 19px;
-        line-height: 28px;
-        font-weight: 600;
-        margin-bottom: 16px;
-    }
+}
+
+.research-section {
+  display: grid;
+  gap: 14px;
+}
+
+.research-section .row {
+  margin-top: 0 !important;
+  display: grid;
+  grid-template-columns: minmax(220px, 31%) 1fr;
+  gap: 24px;
+  padding: 24px;
+  border-radius: 22px;
+  border: 1px solid var(--line-subtle);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-card);
+}
+
+.research-section .row img {
+  width: 100%;
+  border-radius: 16px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.research-section .author {
+  margin: 0 0 10px;
+  color: var(--text-secondary);
+  text-align: justify;
+  line-height: 1.55;
+}
+
+.research-section .link-list {
+  margin-bottom: 12px;
+  line-height: 1.8;
+}
+
+.research-section .link-list a {
+  color: var(--accent);
+}
+
+.research-section article {
+  margin: 0;
+  color: #2f2f33;
+  font-size: 0.95rem;
+  text-align: justify;
+  line-height: 1.72;
+}
+
+.research-section .col-sm-4,
+.research-section .col-sm-8 {
+  width: auto;
+  padding: 0;
+}
+
+.research-section h4 {
+  margin: 0 0 10px;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 920px) {
+  .research-section .row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 18px;
   }
 }
 </style>

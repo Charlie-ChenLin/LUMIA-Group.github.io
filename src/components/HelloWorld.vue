@@ -2,7 +2,10 @@
   <div class="home-container">
     <section class="introduction">
       <h1>Name</h1>
-      <h2>Our latest web design tips, tricks, insights, and resources, hot off the presses.</h2>
+      <h2>
+        Our latest web design tips, tricks, insights, and resources, hot off the
+        presses.
+      </h2>
     </section>
     <section class="project-list">
       <el-row>
@@ -15,10 +18,8 @@
 
 <script>
 export default {
-  name: "homepage",
+  name: "HomePageHero",
 };
 </script>
 
-<style lang="less" scoped>
-
-</style>
+<style lang="less" scoped></style>

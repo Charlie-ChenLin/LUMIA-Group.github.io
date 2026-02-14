@@ -1,44 +1,44 @@
 <template>
-  <div id="app">
-    <app-header v-show="!hideHeaderList.includes($route.name)"/>
-    <router-view />
+  <div id="app" class="app-shell">
+    <app-header v-show="!hideHeaderList.includes($route.name)" />
+    <main class="route-shell">
+      <router-view />
+    </main>
   </div>
 </template>
+
 <script>
-import appHeader from '@/components/Header.vue'
+import appHeader from "@/components/Header.vue";
+
 export default {
   components: {
-    appHeader
+    appHeader,
   },
   data() {
     return {
-      hideHeaderList: []
-    }
-  }
-}
+      hideHeaderList: [],
+    };
+  },
+};
 </script>
+
 <style>
-@import url('./reset.css');
+@import url("./reset.css");
+@import url("./styles/theme.css");
 </style>
+
 <style lang="less">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  min-height: 100vh;
 }
 
-nav {
-  padding: 30px;
+.route-shell {
+  padding-top: 64px;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+@media (max-width: 920px) {
+  .route-shell {
+    padding-top: 60px;
   }
 }
 </style>

@@ -1,78 +1,133 @@
 <template>
-  <div class="people-container">
-    <div class="people-content">
-      <el-collapse v-model="activeNames">
-        <!-- 在这里修改类目名称，如将“Name 1”改为“students” -->
-        <el-collapse-item :title="key" :name="key" v-for="(value, key) in peopleData" :key="key">
-          <ul class="s-list">
-            <li
-              class="s-item"
-              v-for="(item, index) in value"
-              :key="index"
-            >
-              <img :src="item.pic || defaultImg" alt="" srcset="" width="100%"/>
-              <h3 class="s-name" @click="goto(item.homepage)">{{ item.name }}</h3>
-              <p>{{ item.grade }}</p>
-            </li>
-          </ul>
-        </el-collapse-item>
-      </el-collapse>
-    </div>
+  <div class="page-container people-page">
+    <section class="page-hero">
+      <span class="page-eyebrow">Team</span>
+      <h1>People</h1>
+      <p>
+        Meet faculty members, students, and collaborators shaping the LUMIA
+        research agenda.
+      </p>
+    </section>
+
+    <section
+      v-for="group in groupedPeople"
+      :key="group.key"
+      class="group-block"
+    >
+      <div class="section-head">
+        <h2>{{ group.key }}</h2>
+        <p>
+          {{ group.members.length }} member<span v-if="group.members.length > 1"
+            >s</span
+          >
+        </p>
+      </div>
+
+      <ul class="people-grid stagger-list">
+        <li
+          v-for="item in group.members"
+          :key="item.id"
+          class="person-card glass-card"
+        >
+          <img :src="item.pic || defaultImg" :alt="item.name" />
+          <div class="person-info">
+            <h3 @click="goto(item.homepage)">{{ item.name }}</h3>
+            <p>{{ item.grade }}</p>
+          </div>
+        </li>
+      </ul>
+    </section>
   </div>
 </template>
+
 <script>
-import { peopleData } from '@/data/people'
-import defaultImg from '@/assets/default.jpg'
+import { peopleData } from "@/data/people";
+import defaultImg from "@/assets/default.jpg";
+
 export default {
+  name: "PeoplePage",
   data() {
     return {
-      peopleData: peopleData,
-      activeNames: ["Faculty", "PhD", "Master", "Undergrads"],
-      defaultImg
+      peopleData,
+      defaultImg,
     };
+  },
+  computed: {
+    groupedPeople() {
+      return Object.entries(this.peopleData)
+        .map(([key, members]) => ({ key, members }))
+        .filter((group) => group.members && group.members.length);
+    },
   },
   methods: {
     goto(url) {
-      window.open(url, '_blank')
-    }
-  }
+      if (url) {
+        window.open(url, "_blank");
+      }
+    },
+  },
 };
 </script>
+
 <style lang="less" scoped>
-.people-container {
-  max-width: 1280px;
-  margin: auto;
-  padding-top: 80px;
-  .s-list {
-    width: 100%; // 默认宽度
-    margin: 20px auto; // 剧中
-    columns: 4; // 默认列数
-    column-gap: 48px; // 列间距
-    .s-item {
-      width: 100%;
-      break-inside: avoid;
-      margin-bottom: 50px;
-      img {
-        border-radius: 12px;
-      }
-    }
-    .s-name {
-        font-size: 18px;
-        font-weight: 600;
-        &:hover {
-          cursor: pointer;
-          text-decoration: underline;
-        }
-    }
+.group-block {
+  margin-top: 44px;
+}
+
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.person-card {
+  overflow: hidden;
+}
+
+.person-card img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-bottom: 1px solid var(--line-subtle);
+}
+
+.person-info {
+  padding: 14px 14px 18px;
+}
+
+.person-info h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.person-info h3:hover {
+  color: var(--accent);
+}
+
+.person-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+@media (max-width: 1080px) {
+  .people-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
-</style>
-<style lang="less">
-.people-container {
-  .el-collapse-item__header {
-    color: #004d4c;
-    font-size: 18px;
-    font-weight: 600;
+
+@media (max-width: 860px) {
+  .people-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .people-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>
