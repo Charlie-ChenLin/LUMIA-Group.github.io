@@ -9,37 +9,53 @@
           alt="LUMIA logo"
         />
         <span v-else class="logo-fallback">L</span>
-        <span class="name">{{ headerData.name }}</span>
+        <span class="name">{{ brandName }}</span>
       </div>
 
-      <button
-        class="menu-toggle"
-        type="button"
-        @click="mobileOpen = !mobileOpen"
-      >
-        <span></span>
-        <span></span>
-      </button>
+      <div class="header-right">
+        <ul class="header-list" :class="{ open: mobileOpen }">
+          <li
+            v-for="item in translatedHeaderList"
+            :key="item.value"
+            class="header-item"
+            :class="{
+              active: activeHeader === item.value && item.type !== 'link',
+              'feedback-item': item.value === 'feedback',
+            }"
+            @click="clickHeader(item, true)"
+          >
+            <span
+              v-if="item.value === 'feedback'"
+              class="feedback-badge"
+            >
+              {{ item.label }}
+            </span>
+            <span v-else>
+              {{ item.label }}
+            </span>
+          </li>
+        </ul>
 
-      <ul class="header-list" :class="{ open: mobileOpen }">
-        <li
-          v-for="item in headerData.headerList"
-          :key="item.value"
-          class="header-item"
-          :class="{
-            active: activeHeader === item.value && item.type !== 'link',
-          }"
-          @click="clickHeader(item, true)"
+        <button class="lang-toggle" type="button" @click="toggleLanguage">
+          {{ langSwitchLabel }}
+        </button>
+
+        <button
+          class="menu-toggle"
+          type="button"
+          @click="mobileOpen = !mobileOpen"
         >
-          {{ item.label }}
-        </li>
-      </ul>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
     </div>
   </header>
 </template>
 
 <script>
 import { headerData } from "@/data/header";
+import { i18nState, toggleLang, translate } from "@/i18n";
 
 export default {
   name: "AppHeader",
@@ -49,6 +65,30 @@ export default {
       activeHeader: "",
       mobileOpen: false,
     };
+  },
+  computed: {
+    lang() {
+      return i18nState.lang;
+    },
+    brandName() {
+      return this.t("header.brand");
+    },
+    translatedHeaderList() {
+      const navLabelMap = {
+        people: this.t("header.nav.people"),
+        research: this.t("header.nav.research"),
+        news: this.t("header.nav.news"),
+        contact: this.t("header.nav.contact"),
+        feedback: this.t("header.nav.feedback"),
+      };
+      return this.headerData.headerList.map((item) => ({
+        ...item,
+        label: navLabelMap[item.value] || item.label,
+      }));
+    },
+    langSwitchLabel() {
+      return this.lang === "zh" ? "EN" : "中";
+    },
   },
   watch: {
     "$route.name"(routeName) {
@@ -60,6 +100,13 @@ export default {
     this.activeHeader = this.$route.name;
   },
   methods: {
+    t(path) {
+      return translate(this.lang, path);
+    },
+    toggleLanguage() {
+      toggleLang();
+      this.mobileOpen = false;
+    },
     clickHeader(item, closeMenu = false) {
       if (closeMenu) {
         this.mobileOpen = false;
@@ -72,8 +119,19 @@ export default {
 
       this.activeHeader = item.value;
       if (this.$route.name !== item.value) {
+        const targetRoute =
+          item.value === "feedback"
+            ? {
+                name: item.value,
+                query: {
+                  from: this.$route.fullPath,
+                },
+              }
+            : {
+                name: item.value,
+              };
         this.$router.push({
-          name: item.value,
+          ...targetRoute,
         });
       }
     },
@@ -110,6 +168,12 @@ export default {
   gap: 10px;
   cursor: pointer;
   min-width: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .logo {
@@ -159,6 +223,43 @@ export default {
   background: rgba(0, 0, 0, 0.05);
 }
 
+.feedback-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 9px;
+  border: 1px solid rgba(10, 132, 255, 0.45);
+  border-radius: 999px;
+  color: #0a57b7;
+  background: rgba(10, 132, 255, 0.08);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.header-item.active .feedback-badge,
+.header-item:hover .feedback-badge {
+  border-color: rgba(10, 132, 255, 0.62);
+  background: rgba(10, 132, 255, 0.14);
+}
+
+.lang-toggle {
+  border: 1px solid var(--line-subtle);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--text-secondary);
+  width: 42px;
+  height: 32px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 180ms ease, background-color 180ms ease;
+}
+
+.lang-toggle:hover {
+  color: var(--text-primary);
+  background: rgba(0, 0, 0, 0.05);
+}
+
 .menu-toggle {
   width: 36px;
   height: 36px;
@@ -181,6 +282,10 @@ export default {
 @media (max-width: 900px) {
   .header-content {
     height: 60px;
+  }
+
+  .header-right {
+    gap: 8px;
   }
 
   .menu-toggle {

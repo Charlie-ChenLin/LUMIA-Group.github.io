@@ -1,15 +1,15 @@
 <template>
   <div class="page-container home-page">
     <section class="page-hero">
-      <span class="page-eyebrow">LUMIA Group</span>
-      <h1>{{ homeData.name }}</h1>
-      <p>{{ homeData.desc }}</p>
+      <span class="page-eyebrow">{{ t("home.eyebrow") }}</span>
+      <h1>{{ t("home.title") }}</h1>
+      <p>{{ t("home.desc") }}</p>
       <div class="hero-actions">
         <button class="action action-primary" @click="goTo('research')">
-          Explore Research
+          {{ t("home.actions.research") }}
         </button>
         <button class="action action-secondary" @click="goTo('people')">
-          Meet the Team
+          {{ t("home.actions.people") }}
         </button>
       </div>
     </section>
@@ -27,24 +27,19 @@
 
     <section class="showcase">
       <div class="section-head">
-        <h2>Featured Project</h2>
-        <p>Recent work from the group</p>
+        <h2>{{ t("home.featuredTitle") }}</h2>
+        <p>{{ t("home.featuredSubtitle") }}</p>
       </div>
       <div class="project-grid stagger-list">
         <article
-          v-for="item in homeData.projectList"
+          v-for="item in localizedProjects"
           :key="item.id"
           class="project-card glass-card"
         >
-          <img :src="item.img" :alt="item.name || 'Project image'" />
+          <img :src="item.img" :alt="item.name || t('home.projectFallbackTitle')" />
           <div class="project-info">
-            <h3>{{ item.name || "Featured Work" }}</h3>
-            <p>
-              {{
-                item.intro ||
-                "Selected highlights from our current research pipeline."
-              }}
-            </p>
+            <h3>{{ item.name || t("home.projectFallbackTitle") }}</h3>
+            <p>{{ item.intro || t("home.projectFallbackIntro") }}</p>
           </div>
         </article>
       </div>
@@ -54,32 +49,40 @@
 
 <script>
 import { homeData } from "@/data/home";
+import { getMessage, i18nState, translate } from "@/i18n";
 
 export default {
   name: "HomePage",
   data() {
     return {
       homeData,
-      highlightCards: [
-        {
-          title: "Research Focus",
-          description:
-            "Large language models, efficient training, multimodal intelligence, and robust reasoning.",
-        },
-        {
-          title: "Open Collaboration",
-          description:
-            "We work closely with students, researchers, and industry partners on long-horizon AI problems.",
-        },
-        {
-          title: "Impact Driven",
-          description:
-            "From foundational methods to practical systems, we focus on ideas that can scale and transfer.",
-        },
-      ],
     };
   },
+  computed: {
+    lang() {
+      return i18nState.lang;
+    },
+    highlightCards() {
+      return this.msg("home.highlights") || [];
+    },
+    localizedProjects() {
+      return this.homeData.projectList.map((item) => {
+        const localizedItem = this.msg(`home.projects.${item.id}`);
+        return {
+          ...item,
+          name: localizedItem && localizedItem.name ? localizedItem.name : item.name,
+          intro: localizedItem && localizedItem.intro ? localizedItem.intro : item.intro,
+        };
+      });
+    },
+  },
   methods: {
+    t(path) {
+      return translate(this.lang, path);
+    },
+    msg(path) {
+      return getMessage(this.lang, path);
+    },
     goTo(routeName) {
       this.$router.push({ name: routeName });
     },

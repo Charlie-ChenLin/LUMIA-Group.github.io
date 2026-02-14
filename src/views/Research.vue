@@ -1,27 +1,21 @@
 <template>
   <div class="page-container research-page">
     <section class="page-hero">
-      <span class="page-eyebrow">Publications</span>
-      <h1>Research</h1>
-      <p>
-        We build efficient, robust, and interpretable machine intelligence
-        systems across language, graph learning, and multimodal understanding.
-      </p>
+      <span class="page-eyebrow">{{ t("research.eyebrow") }}</span>
+      <h1>{{ t("research.title") }}</h1>
+      <p>{{ t("research.desc") }}</p>
     </section>
 
     <section class="github-entry glass-card">
-      <p class="github-title">Open Source at LUMIA</p>
-      <p class="github-desc">
-        All public code releases, reproducible implementations, and active repositories
-        are maintained in our GitHub organization.
-      </p>
+      <p class="github-title">{{ t("research.githubTitle") }}</p>
+      <p class="github-desc">{{ t("research.githubDesc") }}</p>
       <a
         class="github-link"
         href="https://github.com/LUMIA-Group"
         target="_blank"
         rel="noreferrer"
       >
-        Visit LUMIA Group on GitHub
+        {{ t("research.githubButton") }}
       </a>
     </section>
 
@@ -661,8 +655,20 @@
 </template>
 
 <script>
+import { i18nState, translate } from "@/i18n";
+
 export default {
   name: "ResearchPage",
+  computed: {
+    lang() {
+      return i18nState.lang;
+    },
+  },
+  methods: {
+    t(path) {
+      return translate(this.lang, path);
+    },
+  },
 };
 </script>
 

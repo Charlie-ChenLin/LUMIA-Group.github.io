@@ -1,9 +1,9 @@
 <template>
   <div class="page-container news-page">
     <section class="page-hero">
-      <span class="page-eyebrow">Updates</span>
-      <h1>News</h1>
-      <p>Milestones, awards, and paper acceptances from the lab.</p>
+      <span class="page-eyebrow">{{ t("news.eyebrow") }}</span>
+      <h1>{{ t("news.title") }}</h1>
+      <p>{{ t("news.desc") }}</p>
     </section>
 
     <ul class="news-list stagger-list">
@@ -36,8 +36,15 @@
 </template>
 
 <script>
+import { i18nState, translate } from "@/i18n";
+
 export default {
   name: "NewsPage",
+  computed: {
+    lang() {
+      return i18nState.lang;
+    },
+  },
   data() {
     return {
       newsItems: [
@@ -116,6 +123,11 @@ export default {
         },
       ],
     };
+  },
+  methods: {
+    t(path) {
+      return translate(this.lang, path);
+    },
   },
 };
 </script>

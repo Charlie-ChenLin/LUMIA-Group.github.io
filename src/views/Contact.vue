@@ -1,20 +1,17 @@
 <template>
   <div class="page-container contact-page">
     <section class="page-hero">
-      <span class="page-eyebrow">Get in Touch</span>
-      <h1>Contact</h1>
-      <p>
-        We welcome collaboration proposals, student applications, and technical
-        partnerships.
-      </p>
+      <span class="page-eyebrow">{{ t("contact.eyebrow") }}</span>
+      <h1>{{ t("contact.title") }}</h1>
+      <p>{{ t("contact.desc") }}</p>
       <button class="contact-cta" @click="gotoApplication">
-        Apply to Join
+        {{ t("contact.cta") }}
       </button>
     </section>
 
     <section class="contact-grid stagger-list">
       <article
-        v-for="(item, index) in contactData.contactList"
+        v-for="(item, index) in contactSections"
         :key="index"
         class="contact-card glass-card"
       >
@@ -29,15 +26,33 @@
 
 <script>
 import { contactData } from "@/data/contact";
+import { getMessage, i18nState, translate } from "@/i18n";
 
 export default {
   name: "ContactPage",
+  computed: {
+    lang() {
+      return i18nState.lang;
+    },
+    contactSections() {
+      if (this.lang === "zh") {
+        return this.contactData.contactList;
+      }
+      return this.msg("contact.sections") || this.contactData.contactList;
+    },
+  },
   data() {
     return {
       contactData,
     };
   },
   methods: {
+    t(path) {
+      return translate(this.lang, path);
+    },
+    msg(path) {
+      return getMessage(this.lang, path);
+    },
     gotoApplication() {
       this.$router.push({ name: "application" });
     },

@@ -1,12 +1,9 @@
 <template>
   <div class="page-container people-page">
     <section class="page-hero">
-      <span class="page-eyebrow">Team</span>
-      <h1>People</h1>
-      <p>
-        Meet faculty members, students, and collaborators shaping the LUMIA
-        research agenda.
-      </p>
+      <span class="page-eyebrow">{{ t("people.eyebrow") }}</span>
+      <h1>{{ t("people.title") }}</h1>
+      <p>{{ t("people.desc") }}</p>
     </section>
 
     <section
@@ -15,12 +12,8 @@
       class="group-block"
     >
       <div class="section-head">
-        <h2>{{ group.key }}</h2>
-        <p>
-          {{ group.members.length }} member<span v-if="group.members.length > 1"
-            >s</span
-          >
-        </p>
+        <h2>{{ groupLabel(group.key) }}</h2>
+        <p>{{ memberCountText(group.members.length) }}</p>
       </div>
 
       <ul class="people-grid stagger-list">
@@ -43,6 +36,7 @@
 <script>
 import { peopleData } from "@/data/people";
 import defaultImg from "@/assets/default.jpg";
+import { i18nState, translate } from "@/i18n";
 
 export default {
   name: "PeoplePage",
@@ -53,6 +47,12 @@ export default {
     };
   },
   computed: {
+    lang() {
+      return i18nState.lang;
+    },
+    isZh() {
+      return this.lang === "zh";
+    },
     groupedPeople() {
       return Object.entries(this.peopleData)
         .map(([key, members]) => ({ key, members }))
@@ -60,6 +60,20 @@ export default {
     },
   },
   methods: {
+    t(path) {
+      return translate(this.lang, path);
+    },
+    groupLabel(groupKey) {
+      const keyPath = `people.groups.${groupKey}`;
+      const label = this.t(keyPath);
+      return label === keyPath ? groupKey : label;
+    },
+    memberCountText(count) {
+      if (this.isZh) {
+        return `${count}${this.t("people.members")}`;
+      }
+      return `${count} ${count > 1 ? this.t("people.members") : this.t("people.member")}`;
+    },
     goto(url) {
       if (url) {
         window.open(url, "_blank");

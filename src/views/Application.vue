@@ -1,12 +1,9 @@
 <template>
   <div class="page-container application-page">
     <section class="page-hero">
-      <span class="page-eyebrow">Join Us</span>
-      <h1>Application</h1>
-      <p>
-        Tell us about your interests and background. We review applications for
-        PhD, Master, undergraduate, and internship tracks.
-      </p>
+      <span class="page-eyebrow">{{ t("application.eyebrow") }}</span>
+      <h1>{{ t("application.title") }}</h1>
+      <p>{{ t("application.desc") }}</p>
     </section>
 
     <section class="form-shell glass-card">
@@ -19,15 +16,18 @@
       >
         <el-row :gutter="16">
           <el-col :xs="24" :md="12">
-            <el-form-item label="Name" prop="name">
-              <el-input v-model="ruleForm.name" placeholder="Your full name" />
+            <el-form-item :label="t('application.labels.name')" prop="name">
+              <el-input
+                v-model="ruleForm.name"
+                :placeholder="t('application.placeholders.name')"
+              />
             </el-form-item>
           </el-col>
           <el-col :xs="24" :md="12">
-            <el-form-item label="Email" prop="email">
+            <el-form-item :label="t('application.labels.email')" prop="email">
               <el-input
                 v-model="ruleForm.email"
-                placeholder="name@example.com"
+                :placeholder="t('application.placeholders.email')"
               />
             </el-form-item>
           </el-col>
@@ -35,70 +35,86 @@
 
         <el-row :gutter="16">
           <el-col :xs="24" :md="12">
-            <el-form-item label="Track" prop="track">
+            <el-form-item :label="t('application.labels.track')" prop="track">
               <el-select
                 v-model="ruleForm.track"
-                placeholder="Select a track"
+                :placeholder="t('application.placeholders.track')"
                 style="width: 100%"
               >
-                <el-option label="PhD" value="phd" />
-                <el-option label="Master" value="master" />
-                <el-option label="Undergraduate" value="undergrad" />
-                <el-option label="Internship" value="intern" />
+                <el-option
+                  v-for="option in trackOptions"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
+                />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :md="12">
-            <el-form-item label="Available Start Date" prop="startDate">
+            <el-form-item
+              :label="t('application.labels.startDate')"
+              prop="startDate"
+            >
               <el-date-picker
                 v-model="ruleForm.startDate"
                 type="date"
-                placeholder="Select a date"
+                :placeholder="t('application.placeholders.startDate')"
                 style="width: 100%"
               />
             </el-form-item>
           </el-col>
         </el-row>
 
-        <el-form-item label="Research Interests" prop="interests">
+        <el-form-item
+          :label="t('application.labels.interests')"
+          prop="interests"
+        >
           <el-input
             v-model="ruleForm.interests"
-            placeholder="e.g. LLMs, reasoning, multimodal modeling"
+            :placeholder="t('application.placeholders.interests')"
           />
         </el-form-item>
 
-        <el-form-item label="Skills" prop="skills">
+        <el-form-item :label="t('application.labels.skills')" prop="skills">
           <el-checkbox-group v-model="ruleForm.skills">
-            <el-checkbox label="Machine Learning" />
-            <el-checkbox label="Natural Language Processing" />
-            <el-checkbox label="Speech / Multimodal" />
-            <el-checkbox label="Distributed Systems" />
+            <el-checkbox
+              v-for="option in skillOptions"
+              :key="option.value"
+              :label="option.value"
+            >
+              {{ option.label }}
+            </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
 
-        <el-form-item label="Portfolio / Homepage" prop="links">
+        <el-form-item :label="t('application.labels.links')" prop="links">
           <el-input
             v-model="ruleForm.links"
             type="textarea"
             :rows="2"
-            placeholder="Add links to your homepage, Google Scholar, GitHub, or selected papers"
+            :placeholder="t('application.placeholders.links')"
           />
         </el-form-item>
 
-        <el-form-item label="Statement" prop="statement">
+        <el-form-item
+          :label="t('application.labels.statement')"
+          prop="statement"
+        >
           <el-input
             v-model="ruleForm.statement"
             type="textarea"
             :rows="5"
-            placeholder="Briefly describe why you want to join LUMIA and what you want to build."
+            :placeholder="t('application.placeholders.statement')"
           />
         </el-form-item>
 
         <div class="actions">
-          <el-button type="primary" @click="submitForm('ruleForm')"
-            >Submit</el-button
-          >
-          <el-button @click="resetForm('ruleForm')">Reset</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">
+            {{ t("application.buttons.submit") }}
+          </el-button>
+          <el-button @click="resetForm('ruleForm')">
+            {{ t("application.buttons.reset") }}
+          </el-button>
         </div>
       </el-form>
     </section>
@@ -106,6 +122,8 @@
 </template>
 
 <script>
+import { i18nState, translate } from "@/i18n";
+
 export default {
   name: "ApplicationPage",
   data() {
@@ -120,36 +138,59 @@ export default {
         links: "",
         statement: "",
       },
-      rules: {
+    };
+  },
+  computed: {
+    lang() {
+      return i18nState.lang;
+    },
+    trackOptions() {
+      return [
+        { value: "phd", label: this.t("application.tracks.phd") },
+        { value: "master", label: this.t("application.tracks.master") },
+        { value: "undergrad", label: this.t("application.tracks.undergrad") },
+        { value: "intern", label: this.t("application.tracks.intern") },
+      ];
+    },
+    skillOptions() {
+      return [
+        { value: "ml", label: this.t("application.skills.ml") },
+        { value: "nlp", label: this.t("application.skills.nlp") },
+        { value: "speech", label: this.t("application.skills.speech") },
+        { value: "systems", label: this.t("application.skills.systems") },
+      ];
+    },
+    rules() {
+      return {
         name: [
           {
             required: true,
-            message: "Please input your name",
+            message: this.t("application.rules.nameRequired"),
             trigger: "blur",
           },
           {
             min: 2,
             max: 32,
-            message: "Length should be 2 to 32 characters",
+            message: this.t("application.rules.nameLength"),
             trigger: "blur",
           },
         ],
         email: [
           {
             required: true,
-            message: "Please input your email",
+            message: this.t("application.rules.emailRequired"),
             trigger: "blur",
           },
           {
             type: "email",
-            message: "Please input a valid email",
+            message: this.t("application.rules.emailInvalid"),
             trigger: ["blur", "change"],
           },
         ],
         track: [
           {
             required: true,
-            message: "Please select a track",
+            message: this.t("application.rules.trackRequired"),
             trigger: "change",
           },
         ],
@@ -157,50 +198,55 @@ export default {
           {
             type: "date",
             required: true,
-            message: "Please select a date",
+            message: this.t("application.rules.startDateRequired"),
             trigger: "change",
           },
         ],
         interests: [
           {
             required: true,
-            message: "Please describe your interests",
+            message: this.t("application.rules.interestsRequired"),
             trigger: "blur",
           },
-          { min: 6, message: "Please provide more details", trigger: "blur" },
+          {
+            min: 6,
+            message: this.t("application.rules.interestsLength"),
+            trigger: "blur",
+          },
         ],
         skills: [
           {
             type: "array",
             required: true,
-            message: "Please select at least one skill tag",
+            message: this.t("application.rules.skillsRequired"),
             trigger: "change",
           },
         ],
         statement: [
           {
             required: true,
-            message: "Please provide a statement",
+            message: this.t("application.rules.statementRequired"),
             trigger: "blur",
           },
           {
             min: 40,
-            message: "Please write at least 40 characters",
+            message: this.t("application.rules.statementLength"),
             trigger: "blur",
           },
         ],
-      },
-    };
+      };
+    },
   },
   methods: {
+    t(path) {
+      return translate(this.lang, path);
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (!valid) {
           return false;
         }
-        this.$message.success(
-          "Application submitted. Please follow up by email if needed."
-        );
+        this.$message.success(this.t("application.messages.submitSuccess"));
         return true;
       });
     },
