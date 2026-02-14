@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
 /dist
+/feedback-data
+/artifacts
 
 
 # local env files

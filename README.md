@@ -10,6 +10,28 @@
 ```bash
 ./run-site.sh build
 ./run-site.sh preview
+./run-site.sh public
+./run-site.sh public-tunnel
+```
+
+### 对外访问 + 收集反馈
+```bash
+HOST=0.0.0.0 PORT=4180 ./run-site.sh public
+```
+说明：
+1. `public` 模式会先构建，再启动同机服务 `server/feedback-server.js`。  
+2. 其他人访问 `http://你的局域网IP:4180` 可浏览全部页面。  
+3. 在 `Feedback` 页面提交的意见会保存到本机 `feedback-data/feedback-YYYY-MM.jsonl`。  
+4. 若需公网访问，请在路由器做端口映射，或使用 frp / cloudflared / ngrok 等隧道工具。
+
+### 一键公网临时访问（无需路由器配置）
+```bash
+PORT=4173 ./run-site.sh public-tunnel
+```
+启动后会输出一个 `https://*.loca.lt` 的公网地址，外网用户访问该链接即可浏览网站并提交反馈。  
+可选固定子域名（若可用）：
+```bash
+LT_SUBDOMAIN=lumia-beta PORT=4173 ./run-site.sh public-tunnel
 ```
 
 ### 手动运行
